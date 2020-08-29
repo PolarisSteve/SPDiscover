@@ -1,0 +1,27 @@
+﻿1. Create a folder (default - testdatabase) and drop this database file in it, both mdf and ldf. In folder, not in project.
+2. Modify the Data Source to use the new local database, the default location is testdatabase on the c: drive.
+
+Data_Source=(LocalDB)\MSSQLLocalDB; AttachDbFilename=c:\testdatabase\SPDiscoverDB.mdf; Integrated_Security=True
+
+3. If you want to break up your files into folders (break up by stored procedure functionality i.e. Updating Users,Calculating Commissions) you can add the application and a batch file in the path environment then create a directory and call batch file.
+
+4. If you have issues connecting you can use the parameter ShowConnectionString=true to show what the builder created.
+
+5. Sample batch file:
+	start spdiscover.exe procedure=%1 server=(LocalDB)\MSSQLLocalDB; AttachDbFilename=c:\testdatabase\SPDiscoverDB.mdf; Integrated_Security=true; ShowConnectionString=true
+
+
+6. In the Properties window. The following is for testing:
+
+	procedure=dbo.procedure1
+	server=(LocalDB)\MSSQLLocalDB;
+	AttachDbFilename=c:\testdatabase\SPDiscoverDB.mdf;
+	Integrated_Security=true;
+
+
+7. This test is against adventureworks on localhost
+
+	procedure=dbo.uspGetManagerEmployees
+	Data_Source=localhost;
+	Initial_Catalog=AdventureWorks;
+	Integrated_Security=True
