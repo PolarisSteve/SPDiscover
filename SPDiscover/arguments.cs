@@ -28,19 +28,19 @@ namespace SPDiscover
                 return returnvals[key.ToLower()];
             else
                 return string.Empty;
-        
+
         }
 
         public static Dictionary<string,string> CheckParameters(string[] parms)
         {
-                        
+
             //First check, ensure there are parameters.
             if (parms.Length == 0)
             {
                 Console.WriteLine("You must enter at a parameter for the starting procedure including schema(dbo) and connection string parameters separated with a space");
                 Console.WriteLine("The parameters must be represented by a command and a value separated by an equal sign");
                 Console.WriteLine("The program can build a connection string using SqlConnectionStringBuilder, if a key has a space in it you must convert to an underscore (data source becomes data_source)  ");
-                Console.WriteLine("Example: procedure=ProcedureA ConnectionStringValue(s)=FullyQualifiedDatabaseConnection separated with a space");
+                Console.WriteLine("Example: procedure=ProcedureA Data_Source=localhost Initial_Catalog = AdventureWorks Integrated_Security=True");
                 Console.WriteLine("help=commands will list all valid commands");
                 Console.WriteLine("Press any key to close");
 
@@ -70,10 +70,9 @@ namespace SPDiscover
                     if (parm.Split('=')[0].ToLower() == "help")
                     {
                         Console.WriteLine("The following are valid commands:");
-                        Console.WriteLine("procedure, dbconnection, outputtype, launchwindow, and help");
+                        Console.WriteLine("procedure, outputtype, launchwindow, and help");
                         Console.WriteLine("procedure=startprocedure - Required! Reads through the selected procedure and generates a file and scans for other procedures to iterate through");
                         Console.WriteLine("Any valid SqlConnectionStringBuilder acceptable key synonym, if the synonym contains a space, replace it with an underscore ");
-                        Console.WriteLine("dbconnection=sqlconnectionstring - Use if you need to pass all parameters including user name and password.");
                         Console.WriteLine("OutputType - Htm or txt. Defaults to Htm");
                         Console.WriteLine("LaunchWindow - When type is Htm, will generate anchor tags to launch in a seperate window. Defaults to false");
                         Console.WriteLine("ShowConnectionString=true - optional. Use this to verify connection string built");
@@ -86,15 +85,15 @@ namespace SPDiscover
                     }
                 }
 
-                
 
 
-                //Fourth check for valid parms and store 
+
+                //Fourth check for valid parms and store
                 foreach (string parm in parms)
                 {
                     string cmd = parm.Split('=')[0].ToLower();
                     string pval = parm.Split('=')[1];
-                    
+
                     if (!returnvals.ContainsKey(cmd)) //ensure only one entry
                     {
                         if (!pval.Contains(".") && cmd=="procedure")
@@ -107,10 +106,10 @@ namespace SPDiscover
 
                         returnvals.Add(cmd, pval);
                     }
-                    
+
                 }
             }
-            return returnvals; 
+            return returnvals;
         }
     }
 }
