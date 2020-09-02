@@ -147,7 +147,11 @@ In it's most basic form you would simply start the program with parameters. The 
 - ShowConnectionString
   > for debugging purposes to see what connection string is being generated.
   
-The program uses the SqlConnectionStringbuilder to create a valid string from parameters passed in. Each parameter is compared to the collection of keys which the builder is aware and generate a valid connection string. For example if the following were passed in:
+The program uses the SqlConnectionStringbuilder to create a valid string from parameters passed in. Each parameter is compared to the collection of keys which the builder is aware and generate a valid connection string. 
+
+Keywords which contain a space will need to replace the space with an underscore. Ex. Data Source becomes Data_source.
+
+For example if the following were passed in:
 
 	Data_Source=localhost
 	Initial_Catalog=AdventureWorks
