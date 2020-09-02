@@ -93,6 +93,28 @@ The program included uses these to generate a single file per object in either t
 In addition, the program illustrates other techniques including recursion, and using a T4 template to embed and create a dynamic HTML file. 
 
 
+# A quick note on T4
+Typically T4 templates are used at design time rather than at runtime. When picking the T4 templates there will be one for a Text Template and one for the Runtime Text Template.
+The differences in the TT files are minor, Text Template adding a default output extension and a debugging directive. Additionally the Text Template will have it's Custom Tool property set to 'TextTemplatingFileGenerator'
+The Runtime Text Template will have a value of 'TextTemplatingFilePreprocessor'
+
+Finally, the runtime generation is accomplished with the following code
+
+  > Helpers.CurrProcText = DBText.ToString();
+
+  > PageHTM template = new PageHTM();   
+string pageContent = template.TransformText();
+
+  > File.WriteAllText(string.Format("{0}.htm", spName), pageContent);
+
+In my case, I simply replaced the default TT file with a html template and renamed with the extension .tt
+In the template I use the following to replace at runtime.
+
+  > <#= Helpers.CurrProcText #>
+
+Where Helpers is a static class holding the text to insert.
+
+
 # When procedures can be grouped by functionality
 Up until now, I have described how to inspect individual objects, the issue still exist that the process is not able to bring clarity to the connection between database objects.
 
