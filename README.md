@@ -101,7 +101,7 @@ They may have a series of procedures which runs on a schedule to update informat
 
 The enclosed application starts with a seed object (in this case, dbo.uspGetManagerEmployee in the adventureworks database) and will expand all related objects, creating individual files for each referenced object.
 
-![File Example](files.png)
+![File Example](filedisplay.png)
 
 
 You can create a folder for each type of grouping and add the application to your PATH variable. Doing this allows you to group files under the folder. 
