@@ -23,7 +23,7 @@ My absolute go to system stored procedure is sp_helptext, using this we can gene
 
 sp_helptext will not return the schema for user or system tables. Typically this would be used in this fashion
 ```
-  > sp_helptext uspprinterror
+   sp_helptext uspprinterror
 ```
 Which would generate a single column (text) table with rows for each row in the definition.
 ```
