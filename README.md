@@ -106,7 +106,7 @@ Finally, the runtime generation is accomplished with the following code
    PageHTM template = new PageHTM();   
    string pageContent = template.TransformText();
 
-  > File.WriteAllText(string.Format("{0}.htm", spName), pageContent);
+   File.WriteAllText(string.Format("{0}.htm", spName), pageContent);
 ```
 In my case, I simply replaced the default TT file with a html template and renamed with the extension .tt
 In the template I use the following to replace at runtime.
