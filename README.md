@@ -22,63 +22,64 @@ My absolute go to system stored procedure is sp_helptext, using this we can gene
 - Functions
 
 sp_helptext will not return the schema for user or system tables. Typically this would be used in this fashion
-
+```
   > sp_helptext uspprinterror
-
+```
 Which would generate a single column (text) table with rows for each row in the definition.
-
-  > -- uspPrintError prints error information about the error that caused   
--- execution to jump to the CATCH block of a TRY...CATCH construct.   
--- Should be executed from within the scope of a CATCH block otherwise   
--- it will return without printing any error information.  
-CREATE PROCEDURE [dbo].[uspPrintError]   
-AS  
-BEGIN  
-    SET NOCOUNT ON;  
-  >   
-  >     -- Print error information.   
-  >     PRINT 'Error ' + CONVERT(varchar(50), ERROR_NUMBER()) +  
-  >           ', Severity ' + CONVERT(varchar(5), ERROR_SEVERITY()) +  
-  >           ', State ' + CONVERT(varchar(5), ERROR_STATE()) +   
-  >           ', Procedure ' + ISNULL(ERROR_PROCEDURE(), '-') +   
-  >           ', Line ' + CONVERT(varchar(5), ERROR_LINE());  
-  >     PRINT ERROR_MESSAGE();  
-  > END;  
-
+```
+   -- uspPrintError prints error information about the error that caused   
+   -- execution to jump to the CATCH block of a TRY...CATCH construct.   
+   -- Should be executed from within the scope of a CATCH block otherwise   
+   -- it will return without printing any error information.  
+   CREATE PROCEDURE [dbo].[uspPrintError]   
+   AS  
+   BEGIN  
+       SET NOCOUNT ON;  
+     
+       -- Print error information.   
+       PRINT 'Error ' + CONVERT(varchar(50), ERROR_NUMBER()) +  
+             ', Severity ' + CONVERT(varchar(5), ERROR_SEVERITY()) +  
+             ', State ' + CONVERT(varchar(5), ERROR_STATE()) +   
+             ', Procedure ' + ISNULL(ERROR_PROCEDURE(), '-') +   
+             ', Line ' + CONVERT(varchar(5), ERROR_LINE());  
+       PRINT ERROR_MESSAGE();  
+   END;  
+```
 When I want to see the table schema, I use dynamic SQL which I found at 
 https://www.c-sharpcorner.com/UploadFile/67b45a/how-to-generate-a-create-table-script-for-an-existing-table/
 
 This will return the table definition in a similar fashion  
+
 Finally you might want to determine dependent objects of a stored procedure so that you could more easily identify items if interest. 
 This is also dynamically created using a union of the sys.object where {0} is the object name and {1} is the schema name.
-
-  >   	  select sch_do.name + '.' + do.name as Name, do.type as Type,1
-  >         from sys.objects as o
-  >         join sys.objects as do on do.object_id = o.object_id
-  >         join sys.schemas as sch_o on sch_o.schema_id = o.schema_id
-  >         join sys.schemas as sch_do on sch_do.schema_id = do.schema_id
-  >       where
-  >         o.name = '{0}' and sch_o.name = '{1}' 
-  >         and do.name = '{0}' and sch_o.name = '{1}'
-  >       union
-  >       select sch_do.name + '.' + do.name as Name, do.type as Type,2
-  >       from sys.objects as o
-  >         join sys.sql_expression_dependencies as d on d.referencing_id = o.object_id
-  >         join sys.objects as do on do.name = d.referenced_entity_name
-  >         join sys.schemas as sch_o on sch_o.schema_id = o.schema_id
-  >         join sys.schemas as sch_do on sch_do.schema_id = do.schema_id
-  >       where
-  >         (o.name = '{0}' and sch_o.name = '{1}') and(do.name != '{0}' or sch_o.name != '{1}')
-  >       union
-  >       select sch_do.name + '.' + do.name as Name, do.type as Type,3
-  >       from sys.objects as o
-  >         join sys.triggers as d on d.parent_id = o.object_id
-  >         join sys.objects as do on do.object_id = d.object_id
-  >         join sys.schemas as sch_o on sch_o.schema_id = o.schema_id
-  >         join sys.schemas as sch_do on sch_do.schema_id = do.schema_id
-  >       where
-  >         (o.name = '{0}' and sch_o.name = '{1}') and(do.name != '{0}' or sch_o.name != '{1}') order by 3", tableName, schemaName);
- 
+```
+     	  select sch_do.name + '.' + do.name as Name, do.type as Type,1
+           from sys.objects as o
+           join sys.objects as do on do.object_id = o.object_id
+           join sys.schemas as sch_o on sch_o.schema_id = o.schema_id
+           join sys.schemas as sch_do on sch_do.schema_id = do.schema_id
+         where
+           o.name = '{0}' and sch_o.name = '{1}' 
+           and do.name = '{0}' and sch_o.name = '{1}'
+         union
+         select sch_do.name + '.' + do.name as Name, do.type as Type,2
+         from sys.objects as o
+           join sys.sql_expression_dependencies as d on d.referencing_id = o.object_id
+           join sys.objects as do on do.name = d.referenced_entity_name
+           join sys.schemas as sch_o on sch_o.schema_id = o.schema_id
+           join sys.schemas as sch_do on sch_do.schema_id = do.schema_id
+         where
+           (o.name = '{0}' and sch_o.name = '{1}') and(do.name != '{0}' or sch_o.name != '{1}')
+         union
+         select sch_do.name + '.' + do.name as Name, do.type as Type,3
+         from sys.objects as o
+           join sys.triggers as d on d.parent_id = o.object_id
+           join sys.objects as do on do.object_id = d.object_id
+           join sys.schemas as sch_o on sch_o.schema_id = o.schema_id
+           join sys.schemas as sch_do on sch_do.schema_id = do.schema_id
+         where
+           (o.name = '{0}' and sch_o.name = '{1}') and(do.name != '{0}' or sch_o.name != '{1}') order by 3", tableName, schemaName);
+ ```
 
 In the above code, sys.sql_expression_dependencies is used to also find unbound schema entities. This is useful if you create a stored procedure which calls a procedure which hasn't been created yet.
 
@@ -99,19 +100,19 @@ The differences in the TT files are minor, Text Template adding a default output
 The Runtime Text Template will have a value of 'TextTemplatingFilePreprocessor'
 
 Finally, the runtime generation is accomplished with the following code
+```
+   Helpers.CurrProcText = DBText.ToString();
 
-  > Helpers.CurrProcText = DBText.ToString();
-
-  > PageHTM template = new PageHTM();   
-string pageContent = template.TransformText();
+   PageHTM template = new PageHTM();   
+   string pageContent = template.TransformText();
 
   > File.WriteAllText(string.Format("{0}.htm", spName), pageContent);
-
+```
 In my case, I simply replaced the default TT file with a html template and renamed with the extension .tt
 In the template I use the following to replace at runtime.
-
-  > <#= Helpers.CurrProcText #>
-
+```
+   <#= Helpers.CurrProcText #>
+```
 Where Helpers is a static class holding the text to insert.
 
 
@@ -125,13 +126,20 @@ The enclosed application starts with a seed object (in this case, dbo.uspGetMana
 
 ![File Example](filedisplay.png)
 
+Each htm file contains a single object with dependency links open the other files. Using browser navigation you can easily traverse each file. The files are colorized using highlight.js https://highlightjs.org/ with the CSS set to visual studio 2015 dark mode. 
 
-You can create a folder for each type of grouping and add the application to your PATH variable. Doing this allows you to group files under the folder. 
-To make it easier you may also want to create a batch file to supply consistent parameters in each folder, allowing you to version files over time.
 
 ![Procedure Example](procdisplay.png)
 
 ![Table Example](tabledisplay.png)
+
+You can create a folder for each type of grouping and add the application to your PATH variable. Doing this allows you to group files under the folder. 
+
+To make it easier you may also want to create a batch file to supply consistent parameters in each folder, allowing you to version files over time.
+Example:
+```
+   start spdiscover.exe procedure=%1 server=(LocalDB)\MSSQLLocalDB; AttachDbFilename=c:\testdatabase\SPDiscoverDB.mdf; Integrated_Security=true; ShowConnectionString=true
+```
 
 
 # Using the program
@@ -144,6 +152,7 @@ In it's most basic form you would simply start the program with parameters. The 
 - launchwindow
   > launchwindow=true (optional, will open new window on navigation)
 - help
+  > Will display internal keywords
 - ShowConnectionString
   > for debugging purposes to see what connection string is being generated.
   
@@ -158,7 +167,8 @@ For example if the following were passed in:
 	Integrated_Security=True
 
 would generate - 
-  > Data Source=localhost;Initial Catalog=AdventureWorks;Integrated Security=True
-
+```
+   Data Source=localhost;Initial Catalog=AdventureWorks;Integrated Security=True
+```
 
 
