@@ -126,7 +126,7 @@ The enclosed application starts with a seed object (in this case, dbo.uspGetMana
 
 ![File Example](filedisplay.png)
 
-Each htm file contains a single object with dependency links open the other files. Using browser navigation you can easily traverse each file. The files are colorized using highlight.js https://highlightjs.org/ with the CSS set to visual studio 2015 dark mode. 
+Each htm file contains a single object with dependency links to open the other files. Using browser navigation you can easily traverse each file. The files are colorized using highlight.js https://highlightjs.org/ with the CSS set to visual studio 2015 dark mode. 
 
 
 ![Procedure Example](procdisplay.png)
@@ -148,7 +148,7 @@ In it's most basic form you would simply start the program with parameters. The 
 - procedure
   > procedure=dbo.CalculateTax
 - outputtype
-  > outputtype=txt (optional, normally HTML)
+  > outputtype=txt (optional, normally HTM)
 - launchwindow
   > launchwindow=true (optional, will open new window on navigation)
 - help
